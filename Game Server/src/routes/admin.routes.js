@@ -3,6 +3,7 @@ const User = require("../models/User");
 const Payment = require("../models/Payment");
 const CheatLog = require("../models/CheatLog");
 const HWIDBan = require("../models/HWIDBan");
+const IPBan = require("../models/IPBan"); // ✅ IP Ban Model
 
 // 👤 كل المستخدمين
 router.get("/users", async (req, res) => {
@@ -31,6 +32,21 @@ router.post("/ban-hwid", async (req, res) => {
 
   await HWIDBan.create({
     hwid,
+    reason: reason || "No reason"
+  });
+
+  res.json({ success: true });
+});
+
+// 🚫 IP BAN
+router.post("/ban-ip", async (req, res) => {
+  const { ip, reason } = req.body;
+
+  if (!ip)
+    return res.status(400).json({ msg: "IP required" });
+
+  await IPBan.create({
+    ip,
     reason: reason || "No reason"
   });
 
