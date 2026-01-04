@@ -2,7 +2,14 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const genUID = require("../utils/uid");
+const { username, password, hwid } = req.body;
 
+await User.create({
+  uid: genUID(),
+  username,
+  password: hash,
+  hwid
+});
 exports.register = async (req, res) => {
   const { username, password } = req.body;
 
