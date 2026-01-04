@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/api/voice", require("./routes/voice.routes"));
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/user", require("./routes/user.routes"));
-
+app.use("/api/shop", require("./routes/shop.routes"));
 require("./sockets")(io);
 
 server.listen(process.env.PORT, () => {
