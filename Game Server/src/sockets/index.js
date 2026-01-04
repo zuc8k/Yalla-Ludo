@@ -5,11 +5,12 @@ module.exports = (io) => {
   io.on("connection", async (socket) => {
     console.log("🎮 Player Connected:", socket.id);
 
-    /* ================== ONLINE COUNT ================== */
+    /* ================== ONLINE SET ================== */
     try {
-      await redis.incr("online:count");
+      // أضف Socket ID للـ Set
+      await redis.sAdd("online:sockets", socket.id);
     } catch (err) {
-      console.error("Redis online incr error", err);
+      console.error("Redis sAdd error", err);
     }
 
     /* ================== MATCHMAKING ================== */
@@ -26,13 +27,10 @@ module.exports = (io) => {
       matchmaking.leaveQueue(socket);
 
       try {
-        const count = await redis.decr("online:count");
-
-if (count < 0) {
-  await redis.set("online:count", 0);
-}
+        // احذف Socket ID من الـ Set
+        await redis.sRem("online:sockets", socket.id);
       } catch (err) {
-        console.error("Redis online decr error", err);
+        console.error("Redis sRem error", err);
       }
 
       console.log("❌ Player Disconnected:", socket.id);
