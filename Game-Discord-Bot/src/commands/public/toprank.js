@@ -18,7 +18,7 @@ module.exports = {
     const users = await User.find({ banned: { $ne: true } })
       .sort({ rankPoints: -1 })
       .limit(limit)
-      .select("username rank rankPoints wins loses");
+      .select("username rank rankPoints rankBadge wins loses");
 
     if (!users.length) {
       return interaction.reply({
@@ -31,11 +31,12 @@ module.exports = {
       const wins = u.wins || 0;
       const loses = u.loses || 0;
       const total = wins + loses;
-      const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : "0.0";
+      const winRate =
+        total > 0 ? ((wins / total) * 100).toFixed(1) : "0.0";
 
       return (
-        `**#${i + 1} ${u.username}**\n` +
-        `🏆 ${u.rank || "Unranked"} | ⭐ ${u.rankPoints || 0} RP\n` +
+        `**#${i + 1} ${u.rankBadge || "🥉"} ${u.username}**\n` +
+        `🏆 ${u.rank || "Bronze"} | ⭐ ${u.rankPoints || 0} RP\n` +
         `🎮 ${wins}W / ${loses}L (${winRate}%)`
       );
     });
