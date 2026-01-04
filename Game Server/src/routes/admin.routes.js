@@ -1,15 +1,36 @@
 const router = require("express").Router();
+const User = require("../models/User");
+const Payment = require("../models/Payment");
 const CheatLog = require("../models/CheatLog");
-const GameLog = require("../models/GameLog");
 
-router.get("/cheats", async (req, res) => {
-  const logs = await CheatLog.find().sort({ createdAt: -1 });
-  res.json(logs);
+// 👤 كل المستخدمين
+router.get("/users", async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.get("/games", async (req, res) => {
-  const games = await GameLog.find().sort({ endedAt: -1 });
-  res.json(games);
+// 💰 كل عمليات الشحن
+router.get("/payments", async (req, res) => {
+  try {
+    const payments = await Payment.find().sort({ createdAt: -1 });
+    res.json(payments);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 🚨 سجلات الغش
+router.get("/cheats", async (req, res) => {
+  try {
+    const cheats = await CheatLog.find().sort({ createdAt: -1 });
+    res.json(cheats);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;
