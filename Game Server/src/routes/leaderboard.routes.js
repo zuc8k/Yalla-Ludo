@@ -6,17 +6,7 @@ router.get("/global", async (req, res) => {
   const top = await User.find()
     .sort({ rankPoints: -1 })
     .limit(50)
-    .select("username rank rankPoints");
-
-  res.json(top);
-});
-
-// 🗓 Weekly Leaderboard (MVP)
-router.get("/weekly", async (req, res) => {
-  const top = await User.find()
-    .sort({ wins: -1 })
-    .limit(50)
-    .select("username wins");
+    .select("username rank rankPoints wins");
 
   res.json(top);
 });
