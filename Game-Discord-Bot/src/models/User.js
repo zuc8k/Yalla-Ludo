@@ -1,15 +1,39 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  uid: String,
-  username: String,
-  coins: Number,
-  rank: String,
-  rankPoints: Number,
-  wins: Number,
-  loses: Number,
-  banned: Boolean,
-  hwid: String
+  /* ================== CORE ================== */
+  uid: { type: String, unique: true },
+  username: { type: String, required: true },
+
+  /* ================== ECONOMY ================== */
+  coins: { type: Number, default: 0 },
+
+  /* ================== RANK SYSTEM ================== */
+  rank: { type: String, default: "Bronze" },
+  rankPoints: { type: Number, default: 0 },
+
+  /* ================== STATS ================== */
+  wins: { type: Number, default: 0 },
+  loses: { type: Number, default: 0 },
+
+  /* ================== DAILY REWARD ================== */
+  lastDailyAt: { type: Date },
+  dailyStreak: { type: Number, default: 0 },
+  maxDailyStreak: { type: Number, default: 0 },
+
+  /* ================== ACHIEVEMENTS ================== */
+  achievements: { type: [String], default: [] },
+
+  /* ================== SECURITY ================== */
+  banned: { type: Boolean, default: false },
+  hwid: { type: String },
+
+  /* ================== DISCORD LINK ================== */
+  discordId: { type: String },
+
+  /* ================== META ================== */
+  lastLogin: { type: Date },
+  createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model("User", UserSchema);
