@@ -32,6 +32,9 @@ const UserSchema = new mongoose.Schema({
     default: null
   },
 
+  /* ================== MODERATION ================== */
+  mutedUntil: { type: Date }, // 🔇 Game-level mute
+
   /* ================== SECURITY ================== */
   banned: { type: Boolean, default: false },
   hwid: { type: String },
