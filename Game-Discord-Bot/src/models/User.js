@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
   /* ================== RANK SYSTEM ================== */
   rank: { type: String, default: "Bronze" },
   rankPoints: { type: Number, default: 0 },
-  rankBadge: { type: String, default: "🥉" }, // 🏅 جديد
+  rankBadge: { type: String, default: "🥉" },
 
   /* ================== STATS ================== */
   wins: { type: Number, default: 0 },
@@ -24,6 +24,13 @@ const UserSchema = new mongoose.Schema({
 
   /* ================== ACHIEVEMENTS ================== */
   achievements: { type: [String], default: [] },
+
+  /* ================== ADMIN ROLES ================== */
+  adminRole: {
+    type: String,
+    enum: ["OWNER", "GAME_MASTER", "SUPPORT"],
+    default: null
+  },
 
   /* ================== SECURITY ================== */
   banned: { type: Boolean, default: false },
