@@ -32,7 +32,9 @@ module.exports = {
       total > 0 ? ((wins / total) * 100).toFixed(2) : "0.00";
 
     const rankPosition =
-      (await User.countDocuments({ rankPoints: { $gt: user.rankPoints } })) + 1;
+      (await User.countDocuments({
+        rankPoints: { $gt: user.rankPoints || 0 }
+      })) + 1;
 
     const embed = new EmbedBuilder()
       .setTitle("👤 Player Profile")
@@ -41,14 +43,26 @@ module.exports = {
         { name: "Username", value: user.username, inline: true },
         { name: "UID", value: user.uid, inline: true },
 
-        { name: "Rank", value: user.rank || "Unranked", inline: true },
-        { name: "Rank Points", value: `${user.rankPoints || 0}`, inline: true },
+        {
+          name: "Rank",
+          value: `${user.rankBadge || "🥉"} ${user.rank || "Bronze"}`,
+          inline: true
+        },
+        {
+          name: "Rank Points",
+          value: `${user.rankPoints || 0}`,
+          inline: true
+        },
 
         { name: "Wins", value: `${wins}`, inline: true },
         { name: "Loses", value: `${loses}`, inline: true },
         { name: "Win Rate", value: `${winRate}%`, inline: true },
 
-        { name: "Leaderboard Position", value: `#${rankPosition}`, inline: true }
+        {
+          name: "Leaderboard Position",
+          value: `#${rankPosition}`,
+          inline: true
+        }
       )
       .setFooter({ text: "Public Player Profile" })
       .setTimestamp();
