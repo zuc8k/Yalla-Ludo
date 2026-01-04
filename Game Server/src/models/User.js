@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
   hwid: { type: String },
   banned: { type: Boolean, default: false }
 
+  password: { type: String, required: true }, // hashed
   coins: { type: Number, default: 1000 },
   gems: { type: Number, default: 10 },
 
