@@ -2,6 +2,9 @@ const createPlayer = require("./ludo.state");
 const logic = require("./ludo.logic");
 const antiCheat = require("../antiCheat/validator");
 
+const User = require("../models/User");
+const rankLogic = require("../rank/rank.logic");
+
 const games = {};
 
 module.exports = (io, socket) => {
@@ -58,7 +61,6 @@ module.exports = (io, socket) => {
 
     /* ================== Anti Cheat ================== */
 
-    // ❌ لعب خارج الدور
     if (player.userId !== userId) {
       await antiCheat.invalidMove({
         userId,
@@ -69,7 +71,6 @@ module.exports = (io, socket) => {
       return;
     }
 
-    // ❌ Dice غير منطقي
     if (dice < 1 || dice > 6) {
       await antiCheat.invalidMove({
         userId,
@@ -82,7 +83,6 @@ module.exports = (io, socket) => {
 
     const piece = player.pieces[pieceIndex];
 
-    // ❌ حركة غير مسموحة
     if (!logic.canMove(piece, dice)) {
       await antiCheat.invalidMove({
         userId,
@@ -105,11 +105,34 @@ module.exports = (io, socket) => {
 
     game.moves++;
 
-    // 🏆 فوز
+    /* ================== WIN ================== */
+
     if (logic.checkWin(player)) {
+
+      // 🏆 تحديث الرانك للفائز
+      const winner = await User.findById(player.userId);
+      winner.rankPoints += rankLogic.calculatePoints(true);
+      winner.rank = rankLogic.getRank(winner.rankPoints);
+      winner.wins += 1;
+      await winner.save();
+
+      // ❌ تحديث الخاسرين
+      for (const p of game.players) {
+        if (p.userId !== player.userId) {
+          const loser = await User.findById(p.userId);
+          loser.rankPoints += rankLogic.calculatePoints(false);
+          if (loser.rankPoints < 0) loser.rankPoints = 0;
+          loser.rank = rankLogic.getRank(loser.rankPoints);
+          loser.loses += 1;
+          await loser.save();
+        }
+      }
+
       io.to(room).emit("ludo_win", {
         winner: player.userId,
-        color: player.color
+        color: player.color,
+        rank: winner.rank,
+        rankPoints: winner.rankPoints
       });
 
       delete games[room];
