@@ -2,6 +2,10 @@ const { SlashCommandBuilder } = require("discord.js");
 const User = require("../../models/User");
 const WarnLog = require("../../models/WarnLog");
 const { requireRole } = require("../../middlewares/adminAuth");
+const { checkAutoPunishment } = require("../../services/autoPunishment");
+
+// بعد إنشاء WarnLog
+await checkAutoPunishment(user, admin);
 
 module.exports = {
   data: new SlashCommandBuilder()
