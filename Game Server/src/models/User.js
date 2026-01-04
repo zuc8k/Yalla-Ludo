@@ -17,6 +17,9 @@ const UserSchema = new mongoose.Schema({
   wins: { type: Number, default: 0 },
   loses: { type: Number, default: 0 },
 
+  rankPoints: { type: Number, default: 0 },
+  rank: { type: String, default: "Bronze" }
+
   createdAt: { type: Date, default: Date.now }
 });
 
