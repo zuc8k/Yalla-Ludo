@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
   /* ================== RANK SYSTEM ================== */
   rank: { type: String, default: "Bronze" },
   rankPoints: { type: Number, default: 0 },
+  rankBadge: { type: String, default: "🥉" }, // 🏅 جديد
 
   /* ================== STATS ================== */
   wins: { type: Number, default: 0 },
