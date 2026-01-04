@@ -21,15 +21,6 @@ module.exports = {
       }
     },
 
-    // 🌍 Game Website (لو فيه Backend)
-    {
-      name: "game-website",
-      cwd: "./Game Website",
-      script: "index.js",
-      env: {
-        NODE_ENV: "production"
-      }
-    },
 
     // 🤖 Discord Bot
     {
