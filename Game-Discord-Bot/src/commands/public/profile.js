@@ -9,7 +9,6 @@ module.exports = {
   async execute(interaction) {
     const discordId = interaction.user.id;
 
-    // لازم يكون في ربط Discord بالحساب (discordId محفوظ)
     const user = await User.findOne({ discordId });
     if (!user) {
       return interaction.reply({
@@ -21,12 +20,14 @@ module.exports = {
     const wins = user.wins || 0;
     const loses = user.loses || 0;
     const total = wins + loses;
-    const winRate =
-      total > 0 ? ((wins / total) * 100).toFixed(2) : "0.00";
+    const winRate = total > 0
+      ? ((wins / total) * 100).toFixed(2)
+      : "0.00";
 
-    // ترتيب اللاعب
     const rankPosition =
-      (await User.countDocuments({ rankPoints: { $gt: user.rankPoints } })) + 1;
+      (await User.countDocuments({
+        rankPoints: { $gt: user.rankPoints || 0 }
+      })) + 1;
 
     const embed = new EmbedBuilder()
       .setTitle("👤 Your Game Profile")
@@ -35,15 +36,28 @@ module.exports = {
         { name: "Username", value: user.username, inline: true },
         { name: "UID", value: user.uid, inline: true },
 
-        { name: "Coins", value: `${user.coins}`, inline: true },
-        { name: "Rank", value: user.rank, inline: true },
-        { name: "Rank Points", value: `${user.rankPoints}`, inline: true },
+        { name: "Coins", value: `${user.coins || 0}`, inline: true },
+
+        {
+          name: "Rank",
+          value: `${user.rankBadge || "🥉"} ${user.rank || "Bronze"}`,
+          inline: true
+        },
+        {
+          name: "Rank Points",
+          value: `${user.rankPoints || 0}`,
+          inline: true
+        },
 
         { name: "Wins", value: `${wins}`, inline: true },
         { name: "Loses", value: `${loses}`, inline: true },
         { name: "Win Rate", value: `${winRate}%`, inline: true },
 
-        { name: "Leaderboard Position", value: `#${rankPosition}`, inline: true }
+        {
+          name: "Leaderboard Position",
+          value: `#${rankPosition}`,
+          inline: true
+        }
       )
       .setFooter({ text: "Game Profile" })
       .setTimestamp();
