@@ -26,7 +26,11 @@ module.exports = (io) => {
       matchmaking.leaveQueue(socket);
 
       try {
-        await redis.decr("online:count");
+        const count = await redis.decr("online:count");
+
+if (count < 0) {
+  await redis.set("online:count", 0);
+}
       } catch (err) {
         console.error("Redis online decr error", err);
       }
