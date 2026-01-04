@@ -1,9 +1,23 @@
 const router = require("express").Router();
 const auth = require("../controllers/auth.controller");
 const hwidCheck = require("../middlewares/hwid.middleware");
+const { authLimiter } = require("../middlewares/rateLimit.middleware");
+const ipBan = require("../middlewares/ipban.middleware");
 
-// Register + Login مع فحص HWID
-router.post("/register", hwidCheck, auth.register);
-router.post("/login", hwidCheck, auth.login);
+router.post(
+  "/register",
+  ipBan,
+  authLimiter,
+  hwidCheck,
+  auth.register
+);
+
+router.post(
+  "/login",
+  ipBan,
+  authLimiter,
+  hwidCheck,
+  auth.login
+);
 
 module.exports = router;
