@@ -5,6 +5,9 @@ const UserSchema = new mongoose.Schema({
   username: String,
   password: String,
 
+  hwid: { type: String },
+  banned: { type: Boolean, default: false }
+
   coins: { type: Number, default: 1000 },
   gems: { type: Number, default: 10 },
 
